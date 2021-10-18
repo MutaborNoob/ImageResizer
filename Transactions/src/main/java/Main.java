@@ -1,6 +1,9 @@
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /*
 В банке (класс Bank) есть счета (класс Account) с двумя полями — money и accNumber.
@@ -32,7 +35,15 @@ import java.util.concurrent.TimeUnit;
 Проверяйте сумму на банковских счетах до запуска транзакций и после завершения — сумма в банке не должна измениться.
 Удостоверьтесь, что ваша программа работает в многопоточном режиме. Для этого можете использовать утилиту visualVM.
  */
+
 public class Main {
+    private Account accountFrom;
+    private Account accountTo;
+    //private Bank bank = new Bank();
+
+    private Lock lock1 = new ReentrantLock();
+    private Lock lock2 = new ReentrantLock();
+
     public static void main(String [] args) throws InterruptedException {
        /* Bank bank = new Bank();
 
@@ -56,16 +67,18 @@ public class Main {
         thread1.join();
         thread2.join();
         System.out.println("Total balance at the finish - " + bank.getSumAllAccounts());*/
+        Runner runner = new Runner();
         Bank bank = new Bank();
         System.out.println(bank.getAccounts2());
         System.out.println("Total balance at the start - " + bank.getSumAllAccounts());
         long a = bank.getSumAllAccounts();
         ExecutorService executorService = Executors.newFixedThreadPool(10);
-        for (int i = 0; i<1000; i++){
+        for (int i = 0; i<100; i++){
             executorService.submit(new Runnable() {
                 @Override
                 public void run() {
-                    bank.runThread();
+                    //bank.runThread();
+                    runner.runThread(bank);
                 }
             });
         }
@@ -79,4 +92,5 @@ public class Main {
 
 
     }
+
 }

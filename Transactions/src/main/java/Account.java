@@ -10,12 +10,12 @@ public class Account implements Comparable<Account> {
         isBlocked = false;
     }
 
-    public long getMoney() {
+    public synchronized long getMoney() {
         return money;
     }
 
     public void setMoney(long money) {
-        if (isBlocked = false)
+        if (!isBlocked)
         {
             this.money = money;
         }
@@ -33,43 +33,43 @@ public class Account implements Comparable<Account> {
         this.accNumber = accNumber;
     }
 
-    public void replenishment(long amount){//прибыль
+    public synchronized void replenishment(long amount){//прибыль
         if (!isBlocked)
         {
             money = money + amount;
         }else
             {
-            System.out.println(accNumber +". This account has been blocked. Wait for the decision of the safety commission");
+            return;
             }
 
     }
 
-    public void spending(long amount){//расход
+    public synchronized void spending(long amount){//расход
         if (!isBlocked)
         {
             if (money >= amount)
             {
                 money = money - amount;
             }
-            else if (money < amount)
+            else
             {
-                System.out.println(accNumber + " not enough funds to write off");
+                return;
             }
 
         }
         else{
-            System.out.println(accNumber +". This account has been blocked. Wait for the decision of the safety commission");
+            return;
         }
     }
 
-    public void setBlocked(){
+    public synchronized void setBlocked(){
         isBlocked = true;
     }
 
     public boolean isBlocked() {
         return isBlocked;
     }
-    public boolean checkMoney(long amount){
+    public synchronized boolean checkMoney(long amount){
         return money >= amount;
     }
 
